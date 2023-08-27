@@ -1,0 +1,30 @@
+Sub ExportSheetsAsCSV()
+    Dim ws As Worksheet
+    Dim wb As Workbook
+    Dim strPath As String
+    Dim strFile As String
+    Dim strFileName As String
+
+    Set wb = ActiveWorkbook
+
+    With Application.FileDialog(msoFileDialogFolderPicker)
+        .Title = "Select a Folder"
+        .InitialFileName = wb.Path & "\"
+        If .Show = -1 Then
+            strPath = .SelectedItems(1)
+        Else
+            MsgBox "Export cancelled"
+            Exit Sub
+        End If
+    End With
+
+    For Each ws In wb.Worksheets
+        strFile = ws.Name & ".csv"
+        strFileName = strPath & "\" & strFile
+        ws.Copy
+        ActiveWorkbook.SaveAs Filename:=strFileName, FileFormat:=xlCSV, CreateBackup:=False
+        ActiveWorkbook.Close savechanges:=False
+    Next ws
+
+    MsgBox "Export complete"
+End Sub
